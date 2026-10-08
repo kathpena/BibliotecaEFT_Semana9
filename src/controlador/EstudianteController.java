@@ -33,7 +33,16 @@ public class EstudianteController {
         if(estudianteDAO.actualizar(estudiante)) {return "Estudiante modificado correctamente";}
         return "No se pudo modificar el estudiante";
     }
+
     public String eliminarEstudiante(int id) {
-        if(estudianteDAO.eliminar(id)) {return "Estudiante eliminado correctamente";}
-        return "No se pudo eliminar: el estudiante tiene préstamos registrados";}
+        Estudiante estudiante = estudianteDAO.buscarPorId(id);
+        if(estudiante == null) {
+            return "No se encontró el estudiante";
+        }
+        if(estudianteDAO.eliminar(id)) {
+            usuarioDAO.eliminarPorRut(estudiante.getRut());
+            return "Estudiante eliminado correctamente";
+        }
+        return "No se pudo eliminar: el estudiante tiene préstamos registrados";
+    }
 }

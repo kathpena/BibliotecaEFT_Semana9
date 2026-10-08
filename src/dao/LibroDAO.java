@@ -88,6 +88,40 @@ public class LibroDAO implements CrudDAO<Libro>{
             return false;
         }
     }
+
+    public static synchronized boolean descontarStock(int idLibro) {
+        Connection conexion = DatabaseConnection.getInstance().getConnection();
+        String sqlConsulta = "SELECT stock FROM libros WHERE id = ?";
+        String sqlActualizar = "UPDATE libros SET stock = stock - 1 WHERE id = ?";
+
+        try(PreparedStatement psConsulta = conexion.prepareStatement(sqlConsulta)) {
+            psConsulta.setInt(1, idLibro);
+            try(ResultSet rs = psConsulta.executeQuery()) {
+                if (!rs.next() || rs.getInt("stock") <= 0) {
+                    return false; // el libro no existe o no tiene stock
+                }
+            }
+            try(PreparedStatement psActualizar = conexion.prepareStatement(sqlActualizar)) {
+                psActualizar.setInt(1, idLibro);
+                return psActualizar.executeUpdate() > 0;
+            }
+        }catch (SQLException e) {
+            System.out.println("Error al descontar stock: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static synchronized boolean aumentarStock(int idLibro) {
+        Connection conexion = DatabaseConnection.getInstance().getConnection();
+        String sql = "UPDATE libros SET stock = stock + 1 WHERE id = ?";
+        try(PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idLibro);
+            return ps.executeUpdate() > 0;
+        }catch (SQLException e) {
+            System.out.println("Error al aumentar stock: " + e.getMessage());
+            return false;
+        }
+    }
     private Libro crearLibro(ResultSet rs) throws SQLException {
         return new Libro(
                 rs.getInt("id"),

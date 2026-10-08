@@ -100,6 +100,19 @@ public class UsuarioDAO implements CrudDAO<Usuario>{
             return false;
         }
     }
+
+    /* Elimina el usuario que tenga ese rut */
+    public boolean eliminarPorRut(String rut) {
+        String sql = "DELETE FROM usuarios WHERE rut = ?";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, rut);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar usuario por rut: " + e.getMessage());
+            return false;
+        }
+    }
+
     private Usuario crearUsuario(ResultSet rs) throws SQLException{
         return new Usuario(
                 rs.getInt("id"),

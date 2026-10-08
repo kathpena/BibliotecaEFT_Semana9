@@ -51,8 +51,8 @@ public class MenuView extends JFrame {
         }
 
         btnLibros.addActionListener(e -> new LibroView(!usuario.esBibliotecario()).setVisible(true));
-        btnEstudiantes.addActionListener(e -> pantallaPendiente());
-        btnPrestamos.addActionListener(e -> pantallaPendiente());
+        btnEstudiantes.addActionListener(e -> new EstudianteView().setVisible(true));
+        btnPrestamos.addActionListener(e -> new PrestamoView(usuario).setVisible(true));
         btnReportes.addActionListener(e -> pantallaPendiente());
 
         btnCerrarSesion.addActionListener(e -> {
